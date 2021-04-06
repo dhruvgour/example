@@ -39,7 +39,7 @@ table tr td:last-child {
 var innerHTML='';
 var divideList = [];
 function myFunction() {
-  var example = document.getElementById("number").value;
+  var example = parseInt(document.getElementById("number").value);
   
   for(var i=2;i<1+example;i++){
 		showCalculations(i*i*i);
