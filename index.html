@@ -58,7 +58,27 @@ function showCalculations(fullNumber){
 	this.divideList=[];
 	this.innerHTML+='<table>';
 	writeRow(fullNumber,2);
-	this.innerHTML+='</table><b>Multiple are '+divideList +' </b><br /><br />';
+	this.innerHTML+='</table><b>Multiple are '+divideList +' </b><br />';
+	
+	var result=1;
+	var ghanMoolMulti = findGhanmool(this.divideList)
+	
+	
+	for (var i=0; i<ghanMoolMulti.length; i++) {
+        result = result * ghanMoolMulti[i];
+    } 
+	
+	if(this.divideList.length==ghanMoolMulti.length*3){
+		if(ghanMoolMulti.length>1)
+		 this.innerHTML+='<b>Answer is => '+ghanMoolMulti.join('X')+' => '+result+'</b><br><br>';
+		else	
+		this.innerHTML+='<b>Answer is => '+ghanMoolMulti.join('X')+'</b><br><br>';
+
+	}
+	else{
+		this.innerHTML+='<b> Given number is not a valid cube , please provide valid cube number </b><br>';
+	}
+	
 	var element;
 	element = document.getElementById("example");
 	if (element) {
@@ -81,6 +101,33 @@ function writeRow(total,divider){
 			writeRow(total,getNextPrimeNumber(divider));
 		}
 	}
+	
+}
+
+
+function findGhanmool(divideList){
+	var ghanMoolMultipleList = [];
+	var currentVariable ;
+	var currentVariableCount;
+	for(var i=0;i<divideList.length;i++){
+		if(divideList[i]==currentVariable){
+			currentVariableCount++;
+			
+			if(currentVariableCount==3){
+				ghanMoolMultipleList.push(divideList[i]);
+				currentVariableCount='';
+				currentVariable='';
+			}
+		}
+		else{
+			currentVariableCount=1;
+			
+			currentVariable=divideList[i];
+		}
+	
+	}
+	
+	return ghanMoolMultipleList;
 	
 }
 
