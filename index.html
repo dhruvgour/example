@@ -6,7 +6,8 @@ table {
   border-collapse: collapse;
 }
 table td {
-  border: 5px solid black; 
+  border: 2px solid black; 
+  margin:20px
 }
 table tr:first-child td {
   border-top: 0;
@@ -20,8 +21,38 @@ table tr:last-child td {
 table tr td:last-child {
   border-right: 0;
 }
+* {
+  box-sizing: border-box;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
 </style>
-<h1> Ghanmool Example </h1>
+<h1> Cuberoot Example / Ghanmool </h1>
 
 <form id="frm1">
  How much examples you need : <input id="number" type="text" name="exampleNumber"><br>
@@ -41,7 +72,7 @@ var divideList = [];
 function myFunction() {
   var example = parseInt(document.getElementById("number").value);
   
-  for(var i=2;i<=1+example;i++){
+  for(var i=2;i<1+example;i++){
 		showCalculations(i*i*i);
 	}
 	
@@ -54,29 +85,40 @@ function myFunction1() {
 	
 }
 
+// This is a function which will show full calculation related to finding the multiple of a input number - fullnumber
 function showCalculations(fullNumber){
 	this.divideList=[];
 	this.innerHTML+='<table>';
+	
+	// Try to call the writeRow method as divider 2 , if full number is not devided by 2 , writeRow method will automatically call itself nexttime, and will //set divider to next available prime number 
 	writeRow(fullNumber,2);
+	
+	// Display the multiples of input number 
 	this.innerHTML+='</table><b>Multiple are '+divideList +' </b><br />';
 	
 	var result=1;
+	
+	//FInd the multiples of ghan mool of by passing the  multiples of input number 
 	var ghanMoolMulti = findGhanmool(this.divideList)
 	
-	
+	// Multiply all multiples of ghan mool and find the actual result
 	for (var i=0; i<ghanMoolMulti.length; i++) {
         result = result * ghanMoolMulti[i];
     } 
 	
+	//If length of multiples of ghan mool*3 = length  multiples of input number => means it is a valid ghan/cube number
 	if(this.divideList.length==ghanMoolMulti.length*3){
+		//If length of multiples of ghan mool is greater than 1 , example 2*2 , then show the answer in that way , elase show directly
 		if(ghanMoolMulti.length>1)
 		 this.innerHTML+='<b>Answer is => '+ghanMoolMulti.join('X')+' => '+result+'</b><br><br>';
 		else	
 		this.innerHTML+='<b>Answer is => '+ghanMoolMulti.join('X')+'</b><br><br>';
 
 	}
+	//If length of multiples of ghan mool*3 not equal to length  multiples of input number => means it is not a valid ghan/cube number
 	else{
-		this.innerHTML+='<b> Given number is not a valid cube , please provide valid cube number </b><br>';
+		//Show the error message 
+		this.innerHTML+='<b style="font-color:red;"> Given number is not a valid cube , please provide valid cube number </b><br>';
 	}
 	
 	var element;
@@ -87,41 +129,80 @@ function showCalculations(fullNumber){
 
 }
 
+//This is function to write a new row , in table , which is used to find multiples , 
+//total will be on right side of the table , and divider will be on left side 
 function writeRow(total,divider){
+	//Repeat the process total is greater then  1 and divider
 	if(total>1 && divider<= total){
+	
+		//If divider and total reminder is 0 
 		if(total%divider == 0){
-		this.innerHTML+='<tr><td>'+divider+'</td><td>'+total+'</td></tr>';
+		
+		//Print the row on webpage
+		this.innerHTML+='<tr><td> <b>    '+divider+'     </b></td><td> <b>     '+total+'     </b></td></tr>';
+		
+		//Push the value of divider into multiple list 
 		this.divideList.push(divider);
+		
+		// If divider and total are same , then in last write 1 in right coloum , left coloumn will be blank in that case
 		if(total/divider==1){
-			this.innerHTML+='<tr><td></td><td>'+1+'</td></tr>';
+			this.innerHTML+='<tr><td> <b>     </b></td><td>	 <b>	'+1+'	</b></td></tr>';
 		}
+		
+		//Again call the same method to itself , Only thing is that nowrap
+		// Input parameter will be => total / divider and divider 
+		// example previous it is  3   |   21   , now it will be 3    |   7(21/3)
 		writeRow(total/divider,divider);
 		}
+	    //If divider and total reminder is not 0 , then try with next available prime number
+
 		else{
+			//call/try the same method with next available prime number 
 			writeRow(total,getNextPrimeNumber(divider));
 		}
 	}
 	
 }
 
-
+// This is a function which will return multiples of ghanmool , if we pass multiple of ghan/cube
+// For example we pass input multiples  [2,2,2,3,3,3,4,4,4] , then output will be [2,3,4] 
 function findGhanmool(divideList){
+	
+	//This will store ghanmool multiple list/output, initially it will be blank
 	var ghanMoolMultipleList = [];
+	
+	//Variable which is Currently in operation
 	var currentVariable ;
+	
+	//Count how much time , current variable occured in input multiples
 	var currentVariableCount;
+	
+	//Iterate through each input multiple of cube/ghan
 	for(var i=0;i<divideList.length;i++){
+	
+		//If current variable in input multiples is equal to previous variable
 		if(divideList[i]==currentVariable){
+			//Increase the count by 1
 			currentVariableCount++;
 			
+			//If count is three , means same value is occured 3 times in  input multiples
 			if(currentVariableCount==3){
+			
+				//Push the value into ghan mool multiples , as it is present 3 times in cube multiples 
 				ghanMoolMultipleList.push(divideList[i]);
+				
+				//Reset the counter and currentVariable
 				currentVariableCount='';
 				currentVariable='';
 			}
 		}
+		//If a value is coming first time and not equal to previous variable
 		else{
+			
+			// set current variable count to 1 
 			currentVariableCount=1;
 			
+			//set current variable to the value 
 			currentVariable=divideList[i];
 		}
 	
@@ -131,7 +212,7 @@ function findGhanmool(divideList){
 	
 }
 
-
+// This is a function to find next prime number . example if we will pass 7 as input , it will return 11 as output
 function getNextPrimeNumber(currentNumber){
 	
 	if(!currentNumber)
@@ -139,21 +220,26 @@ function getNextPrimeNumber(currentNumber){
 		
 	currentNumber++;
 	
+	//Repeat the while loop , until currentNumber is a prime number 
 	while(!isPrime(currentNumber)){
+		//If not prime number , increase the currentNumber by one .
 		currentNumber++;
 	}
 	
 	return currentNumber;
 }
 
-
+// This is a function to find prime number
 function isPrime(number){
 
+	// Try each number which is less than actual number but greater then 2 .
 	for(var i=2;i<number;i++){
+		//If reminder is 0 , means it is not a prime number
 		if(number%i==0){
 			return false;
 		}
 	}
+	// If there is no such number it is means it is a prime number 
 	return true;
 }
 
