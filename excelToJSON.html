@@ -1,0 +1,120 @@
+<html lang="en">    
+
+<title> Convert Excel File To JSON </title>
+
+<head>
+
+    <script src="jquery.js"> </script>
+    <script lang="javascript" src="xlsx.full.min.js"></script>
+	
+    <script>
+        $(document).ready(function(){
+              $("#fileUploader").change(function(evt){
+                    var selectedFile = evt.target.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                      var data = event.target.result;
+                      var workbook = XLSX.read(data, {
+                          type: 'binary'
+                      });
+                      workbook.SheetNames.forEach(function(sheetName) {
+                        
+                          var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                          var json_object = JSON.stringify(XL_row_object);
+                          
+						   
+						  for (let i = 0; i < XL_row_object.length;i=i+2) {
+									var obj = XL_row_object[i];
+									
+									var string = '<tr><td class="shrink1"><b><center>'+(i+1)+'</center></b></td><td class="shrink2"><b>'+obj.Name+'</b><br/>'+obj.Address+'<br/>'+obj.Address2+'<br/><b>'+obj.City+' - '+obj.PIN+'<br/>'+obj.Mobile+'</b></td>';
+									
+									obj = XL_row_object[i+1];
+									if(obj)
+									{
+									string += '<td class="shrink1"><b><center>'+(i+2)+'</center></b></td><td class="shrink2"><b>'+obj.Name+'</b><br/>'+obj.Address+'<br/>'+obj.Address2+'<br/><b>'+obj.City+' - '+obj.PIN+'<br/>'+obj.Mobile+'</b></td></tr>';
+									}
+									else{
+										string += '<td class="shrink1"><b>'+'</b></td><td class="shrink2"><b>'+'</b><br/>'+'<br/>'+'<br/><b></b></td></tr>';
+									}
+									
+									document.getElementById("jsonObject").innerHTML +=string;
+
+								console.log(document.getElementById("jsonObject").innerHTML);
+							}
+
+                        })
+                    };
+
+                    reader.onerror = function(event) {
+                      console.error("File could not be read! Code " + event.target.error.code);
+                    };
+
+                    reader.readAsBinaryString(selectedFile);
+              });
+        });
+    </script>
+
+</head>
+
+<body>
+
+    <input type="file" id="fileUploader" name="fileUploader" accept=".xls, .xlsx"/>
+    </br></br>
+	<div id="table11">
+	<style>
+		table {
+    border: 1px solid black;
+	margin:20px;
+	width: -webkit-fill-available;
+}
+
+table td {
+    border: 2.5px solid black;
+}
+
+
+table td.shrink1 {
+	padding:7px;
+	max-width:50px
+}
+table td.shrink2 {
+	max-width:250px;
+	padding:10px
+	
+}
+
+table.fixed { table-layout:fixed; }
+table.fixed td { overflow: hidden; }
+
+font-family: Arial, Helvetica, sans-serif;
+	</style>
+    <table class="fixed">
+	<col width="50px" />
+    <col width="300px" />
+	<col width="50px" />
+    <col width="300px" />
+	<tbody id="jsonObject"><tbody>
+	</table>
+	</div>
+	 <input type="button" id="btnExport" value="Export" onclick="Export()" />
+<script type="text/javascript">
+        function Export() {
+        var sTable = document.getElementById('table11').innerHTML;
+
+
+
+        // CREATE A WINDOW OBJECT.
+        var win = window.open('', '', 'height=700,width=700');
+
+        win.document.write('<html><head>');
+        win.document.write('<body>');
+        win.document.write(sTable);         // THE TABLE CONTENTS INSIDE THE BODY TAG.
+        win.document.write('</body></html>');
+
+        win.document.close(); 	// CLOSE THE CURRENT WINDOW.
+
+        win.print();    // PRINT THE CONTENTS.
+    
+        }
+    </script>
+</body>
